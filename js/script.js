@@ -13,6 +13,7 @@ function generateTaskId() {
 
 // Todo: create a function to create a task card
 function createTaskCard(task) {
+    
 
     }
 
@@ -41,6 +42,14 @@ function renderTaskList() {
 // Todo: create a function to handle adding a new task
 function handleAddTask(event) {
     event.preventDefault()
+    const task = {
+        id: generateTaskId(),
+        title: $('#task-title').val(),
+        description:
+        $('#message-text').val(),
+        dueDate: $('#due-date').val(),
+        status: 'to-do',
+    }
     
     console.log('hello')
 
