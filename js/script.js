@@ -2,6 +2,7 @@
 const toDoDiv = $('#todo-cards');
 const inProgressDiv = $('#in-progress-cards');
 const doneDiv = $('#done-cards');
+const deleteDiv = $('#delete')
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
@@ -27,7 +28,7 @@ function createTaskCard(task) {
 
     if (task.status === 'to-do') {
         toDoDiv.append(taskCard);
-    } else if (task.status === 'in-progress-cards') { 
+    } else if (task.status === 'in-progress-cards') {
         inProgressDiv.append(taskCard)
     } else {
         doneDiv.append(taskCard)
@@ -44,7 +45,7 @@ function renderTaskList() {
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    tasks.forEach(function(task){
+    tasks.forEach(function (task) {
         createTaskCard(task)
     })
 
@@ -73,10 +74,13 @@ function handleAddTask(event) {
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
-    const cardDeleteBtn = $('<button>')
-    .getElementById("delete");
-   
-
+    event.preventDefault()
+    const cardDeleteBtn = $('delete')
+        .addClass('btn btn-danger delete')
+        .text('Delete')
+        .attr('data-task-id', tasks.id);
+    cardDeleteBtn.on('click', handleDeleteTask);
+    taskCard.append(cardDeleteBtn);
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
