@@ -20,11 +20,14 @@ function createTaskCard(task) {
     const cardBody = $('<div>').addClass('card-body');
     const cardDescription = $('<p>').addClass('card-text').text(task.description);
     const cardDueDate = $('<p>').addClass('card-text').text(task.dueDate);
+    const deleteBtn = $(`<button id='${task.id}' class='deleteBtn btn btn-danger'>Delete</button>`)
+    deleteBtn.on('click', handleDeleteTask);
 
     taskCard.append(cardHeader);
     taskCard.append(cardBody);
     taskCard.append(cardDescription);
     taskCard.append(cardDueDate);
+    taskCard.append(deleteBtn);
 
     if (task.status === 'to-do') {
         toDoDiv.append(taskCard);
@@ -33,8 +36,8 @@ function createTaskCard(task) {
     } else {
         doneDiv.append(taskCard)
     }
-
-
+    
+    
 }
 
 
@@ -42,13 +45,24 @@ function createTaskCard(task) {
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
     // need to clear divs of previous tasks
+    toDoDiv.empty();
+    inProgressDiv.empty();
+    doneDiv.empty();
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
     tasks.forEach(function (task) {
         createTaskCard(task)
     })
-
+    // const original = $(e.target).hasClass('ui-draggable')
+    //     ? $(e.target)
+    //     : $(e.target).closest('.ui-draggable');
+    
+    // return original.clone().css({
+    //     width: original.outerWidth(),
+    // });
+    
+    
 }
 
 // Todo: create a function to handle adding a new task
@@ -74,13 +88,18 @@ function handleAddTask(event) {
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
-    event.preventDefault()
-    const cardDeleteBtn = $('delete')
-        .addClass('btn btn-danger delete')
-        .text('Delete')
-        .attr('data-task-id', tasks.id);
-    cardDeleteBtn.on('click', handleDeleteTask);
-    taskCard.append(cardDeleteBtn);
+    const id = $(this).attr('id');
+    console.log(id);
+
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const newTaskList = tasks.filter(function(task) {
+        return task.id !== id
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(newTaskList));
+
+    renderTaskList();
 }
 
 // Todo: create a function to handle dropping a task into a new status lane
@@ -109,13 +128,6 @@ $(document).ready(function () {
 
         helper: function (e) {
 
-            const original = $(e.target).hasClass('ui-draggable')
-                ? $(e.target)
-                : $(e.target).closest('.ui-draggable');
-
-            return original.clone().css({
-                width: original.outerWidth(),
-            });
         },
     });
 });
